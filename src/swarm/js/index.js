@@ -283,18 +283,17 @@
 
             that.mPosition.x = event.pageX;
             that.mPosition.y = event.pageY;
-            console.log(that.mPosition.x + ', ' + that.mPosition.y);
         });
 
         element.addEventListener('mousedown', function(event) {
-            console.log("mousedown");
+            if(event.which === 1) that.state.left = true;
             if(event.which === 3 ) that.state.right = true;
 
             return event.preventDefault();
         });
 
         element.addEventListener('mouseup', function(event) {
-            that.state.right = false;
+            that.state.right = that.state.left = false;
 
             return event.preventDefault();
         });
@@ -350,6 +349,9 @@
         this.velocity.x += (rnd * Math.sin(a) + this.generator.simplex3d(xx, yy, -zz)); // sin or cos, no matter
         this.velocity.y += (rnd * Math.cos(a) + this.generator.simplex3d(xx, yy, zz)); // opposite zz's matters
 
+        if (this.mousemon.state.left) {
+            this.velocity.add(this.mousemon.position.clone().sub(this.position).mul(.00085));
+        }
         if(this.mousemon.state.right && this.position.distance(this.mousemon.position) < this.ctx.random(200, 250)) {
             this.velocity.add(this.position.clone().sub(this.mousemon.position).mul(.02));
         }
