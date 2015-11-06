@@ -328,7 +328,7 @@ window.addEventListener('load', function () {
     var width, height, bounds = new Vector3D(0,0,0);
     var hue = 0;
     var settings = {
-        particleNum: 15000,
+        particleNum: 10000,
         fadeOverlay: true,
         staticColor: {r: 0, g: 75, b: 50},
         staticColorString: 'rgba(0, 75, 50, 0.55)'
@@ -380,5 +380,9 @@ window.addEventListener('load', function () {
         hue = ((hue + .5) % 360);
     }());
 
+    var intro = $("#intro")
+        .fadeIn(2000)
+        .delay(2000)
+        .fadeOut(2000);
 });
 

@@ -1,8 +1,37 @@
 body, html {
+    background-color: black;
     margin: 0;
     padding: 0;
 }
 
 body canvas {
     display: block;
+}
+
+#introContainer {
+    top: 40%;
+    left: 40%;
+    position: relative;
+}
+
+#intro {
+    position: absolute;
+    display: none;
+    text-align: center;
+    line-height: 100px;
+    height: 100%;
+    width: 100%;
+    color: #ffffff;
+    background-color: black;
+}
+
+span {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    height: 100%;
+    width: 100%;
+    line-height: normal;
+    font-size: 42px;
+    font-family: Impact, Charcoal, sans-serif;
 }
