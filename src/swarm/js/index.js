@@ -257,14 +257,62 @@
     root.Perlin = Perlin;
 }(window));
 
+;(function(root) {
+    var MouseMonitor = function(element) {
+        this.mPosition = new Vector3D(0, 0, 0);
+        this.state = {left: false, middle: false, right: false};
+        this.element = element;
+
+        var that = this;
+        element.addEventListener('mousemove', function(event) {
+            var dot;
+            var eventDoc;
+            var doc;
+            var body;
+            var pageX;
+            var pageY;
+            event = event || window.event;
+
+            if(event.pageX == null && event.clientX != null) {
+                eventDoc = (event.target && event.target.ownerDocument) || document;
+                doc = eventDoc.documentElement;
+                body = eventDoc.body;
+                event.pageX = event.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
+                event.pageY = event.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
+            }
+
+            that.mPosition.x = event.pageX;
+            that.mPosition.y = event.pageY;
+            console.log(that.mPosition.x + ', ' + that.mPosition.y);
+        });
+
+        element.addEventListener('mousedown', function(event) {
+            console.log("mousedown");
+            if(event.which === 3 ) that.state.right = true;
+
+            return event.preventDefault();
+        });
+
+        element.addEventListener('mouseup', function(event) {
+            that.state.right = false;
+
+            return event.preventDefault();
+        });
+    };
+
+    root.MouseMonitor = MouseMonitor;
+
+}(window));
+
 +(function(root) {
-    var Particle = function Particle(generator_, bounds_, ctx_) {
+    var Particle = function Particle(generator_, bounds_, ctx_, mon_) {
         this.position = new Vector3D();
         this.trailTo = new Vector3D();
         this.velocity = new Vector3D();
         this.generator = generator_;
         this.bounds = bounds_;
         this.ctx = ctx_;
+        this.mousemon = mon_;
 
         this.reset();
 
@@ -302,6 +350,10 @@
         this.velocity.x += (rnd * Math.sin(a) + this.generator.simplex3d(xx, yy, -zz)); // sin or cos, no matter
         this.velocity.y += (rnd * Math.cos(a) + this.generator.simplex3d(xx, yy, zz)); // opposite zz's matters
 
+        if(this.mousemon.state.right && this.position.distance(this.mousemon.position) < this.ctx.random(200, 250)) {
+            this.velocity.add(this.position.clone().sub(this.mousemon.position).mul(.02));
+        }
+
         // keep a copy of the current position, for a nice line between then and now and add velocity
         this.position.move(this.trailTo).add(this.velocity.mul(.94)); // slow down the velocity slightly
 
@@ -324,6 +376,7 @@ window.addEventListener('load', function () {
     var p = new Perlin();
     var canvas = document.getElementById("swarm");
     var context = canvas.getContext("2d");
+    var monitor = new MouseMonitor(canvas);
     var particles = [];
     var width, height, bounds = new Vector3D(0,0,0);
     var hue = 0;
@@ -354,7 +407,7 @@ window.addEventListener('load', function () {
     window.addEventListener('resize', resize);
 
     for (var i = 0; i < settings.particleNum; i++) {
-        particles.push(new Particle(p, bounds, ctx));
+        particles.push(new Particle(p, bounds, ctx, monitor));
     }
 
     +(function render() {
