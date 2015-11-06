@@ -333,6 +333,8 @@ window.addEventListener('load', function () {
         staticColor: {r: 0, g: 75, b: 50},
         staticColorString: 'rgba(0, 75, 50, 0.55)'
     };
+	
+	document.getElementById("audio").play();
 
     // seed perlin with random bytes from smallprng
     p.init(function() {
