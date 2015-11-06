@@ -328,7 +328,7 @@ window.addEventListener('load', function () {
     var width, height, bounds = new Vector3D(0,0,0);
     var hue = 0;
     var settings = {
-        particleNum: 10000,
+        particleNum: 15000,
         fadeOverlay: true,
         staticColor: {r: 0, g: 75, b: 50},
         staticColorString: 'rgba(0, 75, 50, 0.55)'
